@@ -196,7 +196,8 @@ export default {
             })
         },
         getCivitaiUrl(modelId) {
-            return globals.civitaiUrl + '/models/' + modelId
+            const host = typeof opts !== 'undefined' && opts.paio_neo_popup_domain === 'civitai.com' ? 'civitai.com' : 'civitai.red'
+            return 'https://' + host + '/models/' + modelId
         },
         onOpenCivitaiClick() {
             if (!this.data.modelId) return

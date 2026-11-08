@@ -1,3 +1,5 @@
+> **asugonomi modification fork:** [日本語の変更点・導入・検証範囲](README_MODIFICATIONS.md) / [Reversible installer](https://github.com/asugonomi/ForgeNeoModification). Based on `cecd70ed68c4`.
+
 <p align="center">
   <img src=".github/banner.png" alt="Banner"/>
 </p>

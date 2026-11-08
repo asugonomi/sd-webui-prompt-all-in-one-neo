@@ -476,6 +476,17 @@ def on_ui_settings():
         section = ('paio_neo', 'Prompt All-in-One Neo')
 
         shared.opts.add_option(
+            'paio_neo_popup_domain',
+            shared.OptionInfo(
+                'civitai.red',
+                'ポップアップから開くCivitaiのドメイン',
+                gr.Radio,
+                {'choices': ['civitai.red', 'civitai.com']},
+                section=section,
+            ),
+        )
+
+        shared.opts.add_option(
             'paio_neo_civitai_api_key',
             shared.OptionInfo(
                 '',
