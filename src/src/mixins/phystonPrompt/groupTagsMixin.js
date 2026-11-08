@@ -346,20 +346,12 @@ export default {
             return indexes
         },
         networkCardThumbnail(item) {
-            return item.preview || item.civitai_info?.images?.[0] || this.emptyCardThumbnail();
+            const failed = item._fnmImageFailures || [];
+            return [item.thumbnail, item.preview, item.civitai_info?.images?.[0]]
+                .find(url => url && !failed.includes(url)) || this.emptyCardThumbnail();
         },
         emptyCardThumbnail() {
             return "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20fill%3D%22%2330343b%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2280%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%23c7cbd2%22%20font-size%3D%2215%22%20font-family%3D%22sans-serif%22%3E%E7%94%BB%E5%83%8F%E3%81%AA%E3%81%97%3C%2Ftext%3E%3C%2Fsvg%3E";
-        },
-        onNetworkCardImageError(event, item) {
-            const img = event.currentTarget;
-            const remote = item.civitai_info?.images?.[0];
-            const current = img.getAttribute("src");
-            if (item.preview && current === item.preview && remote && current !== remote) {
-                img.src = remote;
-            } else if (current !== this.emptyCardThumbnail()) {
-                img.src = this.emptyCardThumbnail();
-            }
         },
         getGroupTagExtraNetworkStyle(data) {
             let indexes = this._groupTagsExtraNetworkTagsIndexes(data)
@@ -408,6 +400,14 @@ export default {
         },
         onGroupExtraNetworkMouseLeave() {
             this.$emit('hideExtraNetworks')
+        },
+        onGroupExtraNetworkImageError(extraData, event) {
+            const current = event?.currentTarget?.getAttribute('src');
+            if (current && current !== this.emptyCardThumbnail()) {
+                extraData._fnmImageFailures = [...new Set([...(extraData._fnmImageFailures || []), current])];
+            }
+            // Keep upstream's expired-thumbnail fallback; also skip broken local/remote previews.
+            extraData.thumbnail = null
         },
         onClickGroupExtraNetworkRefresh() {
             this.$emit('refreshExtraNetworks')
